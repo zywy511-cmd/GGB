@@ -1,0 +1,36 @@
+workflows:
+  ios-build:
+    name: iOS Build
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        XCODE_PROJECT: "GGB.xcodeproj"
+        XCODE_SCHEME: "GGB"
+      xcode: 16.0
+    scripts:
+      - name: 安装 XcodeGen
+        script: |
+          brew install xcodegen
+      - name: 生成 Xcode 工程
+        script: |
+          xcodegen generate --spec project.yml
+          ls -la "$XCODE_PROJECT"
+      - name: 构建 IPA
+        script: |
+          xcodebuild \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_ENTITLEMENTS="" \
+            ONLY_ACTIVE_ARCH=NO \
+            clean build
+    artifacts:
+      - build/Build/Products/**/*.app
+      - build/Build/Products/**/*.app.dSYM.zip
