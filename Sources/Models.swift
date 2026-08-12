@@ -14,7 +14,7 @@ struct Comic: Identifiable, Codable, Equatable {
 // MARK: - 分类
 
 struct CategoryItem: Identifiable, Hashable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let param: String
 
@@ -23,7 +23,7 @@ struct CategoryItem: Identifiable, Hashable {
 }
 
 struct CategoryGroup: Identifiable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let items: [CategoryItem]
 }
@@ -31,7 +31,7 @@ struct CategoryGroup: Identifiable {
 // MARK: - 首页板块
 
 struct ExploreSection: Identifiable {
-    let id = UUID()
+    var id = UUID()
     let title: String
     let comics: [Comic]
     let moreParam: String?
@@ -48,9 +48,13 @@ struct PagedComics {
 // MARK: - 漫画详情
 
 struct TagGroup: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let values: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case name, values
+    }
 }
 
 struct ComicDetails: Codable {
